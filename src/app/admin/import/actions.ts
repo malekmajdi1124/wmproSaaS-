@@ -95,21 +95,27 @@ export async function deleteBatch(batchId: string) {
     // 1. Delete points for tasks
     const { data: tasks } = await supabase.from('outreach_tasks').select('id').in('account_id', accountIds)
     if (tasks && tasks.length > 0) {
-      await supabase.from('points_ledger').delete().in('task_id', tasks.map(t => t.id))
+      const { error: pError } = await supabase.from('points_ledger').delete().in('task_id', tasks.map(t => t.id))
+      if (pError) return { error: 'Failed to delete points for tasks: ' + pError.message }
     }
 
     // 2. Delete points for meetings
     const { data: meetings } = await supabase.from('meetings').select('id').in('account_id', accountIds)
     if (meetings && meetings.length > 0) {
-      await supabase.from('points_ledger').delete().in('meeting_id', meetings.map(m => m.id))
+      const { error: pmError } = await supabase.from('points_ledger').delete().in('meeting_id', meetings.map(m => m.id))
+      if (pmError) return { error: 'Failed to delete points for meetings: ' + pmError.message }
     }
 
     // 3. Delete tasks and meetings
-    await supabase.from('outreach_tasks').delete().in('account_id', accountIds)
-    await supabase.from('meetings').delete().in('account_id', accountIds)
+    const { error: tError } = await supabase.from('outreach_tasks').delete().in('account_id', accountIds)
+    if (tError) return { error: 'Failed to delete tasks: ' + tError.message }
+    
+    const { error: mError } = await supabase.from('meetings').delete().in('account_id', accountIds)
+    if (mError) return { error: 'Failed to delete meetings: ' + mError.message }
     
     // 4. Delete accounts
-    await supabase.from('instagram_accounts').delete().in('id', accountIds)
+    const { error: aError } = await supabase.from('instagram_accounts').delete().in('id', accountIds)
+    if (aError) return { error: 'Failed to delete accounts: ' + aError.message }
   }
 
   const { error } = await supabase.from('import_batches').delete().eq('id', batchId)
