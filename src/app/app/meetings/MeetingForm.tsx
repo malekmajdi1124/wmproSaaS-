@@ -62,10 +62,8 @@ export default function MeetingForm({ accounts }: { accounts: any[] }) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm h-10">
-          <Plus className="mr-2 h-4 w-4" /> إضافة اجتماع
-        </Button>
+      <DialogTrigger render={<Button className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm h-10" />}>
+        <Plus className="mr-2 h-4 w-4" /> إضافة اجتماع
       </DialogTrigger>
       <DialogContent className="max-w-md w-full h-[100dvh] sm:h-auto p-0 sm:p-6 bg-card border-none sm:border sm:border-border sm:rounded-2xl flex flex-col !rounded-none sm:!rounded-2xl" dir="rtl">
         <DialogHeader className="p-4 sm:p-0 border-b border-border sm:border-none sticky top-0 bg-card z-10 shrink-0 text-right">
@@ -78,20 +76,18 @@ export default function MeetingForm({ accounts }: { accounts: any[] }) {
             <div className="space-y-2">
               <Label className="text-foreground font-medium">الحساب (إنستغرام)</Label>
               <Popover open={openCombobox} onOpenChange={setOpenCombobox}>
-                <PopoverTrigger asChild>
-                  <Button
+                <PopoverTrigger render={<Button
                     variant="outline"
                     role="combobox"
                     aria-expanded={openCombobox}
                     className="w-full justify-between bg-card border-border hover:bg-muted text-foreground h-12"
-                  >
+                  />}>
                     {selectedAccount ? (
                       <span className="truncate font-bold">{selectedAccount.business_name || selectedAccount.username}</span>
                     ) : (
                       <span className="text-muted-foreground">ابحث عن حساب تواصلت معه...</span>
                     )}
                     <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                  </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-[calc(100vw-2rem)] sm:w-[380px] p-0 bg-card border-border shadow-lg" dir="rtl">
                   <Command className="bg-transparent">
